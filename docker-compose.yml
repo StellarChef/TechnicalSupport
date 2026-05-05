@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ./backend/app
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+    volumes:
+      - ./backend/app:/app
+    ports:
+      - "${BACKEND_PORT}:8000"
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: ./technical-cases-ui
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    volumes:
+      - ./technical-cases-ui:/app
+      - node_modules_frontend:/app/node_modules
+    ports:
+      - "${FRONTEND_PORT}:5173"
+    depends_on:
+      - backend
+
+volumes:
+  node_modules_frontend:
