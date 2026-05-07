@@ -1,0 +1,78 @@
+{
+  "case": {
+    "id": "CASE-2026-AD3F",
+    "title": "Uszkodzona bateria w łazience",
+    "createdAt": "2026-05-07T21:24:00.515942Z",
+    "status": "ai_review",
+    "damageDescription": "Bateria przecieka przy podstawie",
+    "repairDescription": "Sprawdź uszczelnienia, wymień uszczelkę lub baterię i przetestuj szczelność pod ciśnieniem.",
+    "photos": [
+      {
+        "id": "photo_01",
+        "url": "https://example.com/battery.jpg",
+        "isMain": true
+      }
+    ],
+    "aiClassification": {
+      "category": "Hydraulika",
+      "damageType": "bateria łazienkowa",
+      "confidence": 0.65,
+      "suggestedResponsibility": "landlord",
+      "suggestedRepair": "Sprawdź uszczelnienia, wymień uszczelkę lub baterię i przetestuj szczelność pod ciśnieniem.",
+      "suggestedLaborCost": 210,
+      "suggestedMaterialCost": 140
+    },
+    "responsibility": "landlord",
+    "cost": {
+      "labor": 210,
+      "materials": 140,
+      "total": 350,
+      "currency": "PLN"
+    },
+    "mail": {
+      "shouldGenerate": false,
+      "template": "tenant_repair_notice",
+      "status": "draft"
+    },
+    "feedback": {
+      "aiHelpful": null,
+      "rating": null,
+      "comment": null
+    },
+    "history": [
+      {
+        "type": "created",
+        "label": "Utworzono zgłoszenie",
+        "createdAt": "2026-05-07T21:24:00.515959Z",
+        "createdBy": "AI System"
+      },
+      {
+        "type": "ai_classified",
+        "label": "AI sklasyfikowało zgłoszenie",
+        "createdAt": "2026-05-07T21:24:02.515961Z",
+        "createdBy": "AI"
+      }
+    ]
+  },
+  "verification_result": {
+    "damage_cause": "Uszkodzenie amortyzacyjne",
+    "confidence_percentage": 65,
+    "detected_element": "bateria łazienkowa",
+    "damage_description": "Bateria przecieka przy podstawie",
+    "repair_steps": "Sprawdź uszczelnienia, wymień uszczelkę lub baterię i przetestuj szczelność pod ciśnieniem.",
+    "estimated_cost_pln": 300,
+    "repair_durability": "wysoka",
+    "repair_difficulty": "niski"
+  },
+  "cost_estimation": {
+    "responsibility": "landlord",
+    "final_cost_pln": 350,
+    "cost_breakdown": {
+      "labor": 210,
+      "materials": 140
+    },
+    "cost_validation": "underestimated",
+    "reasoning": "Responsibility set to landlord based on damage cause. Final cost calculated from baseline 300 PLN and market references. Search output contained a market indication of 350 PLN."
+  },
+  "processing_timestamp": "2026-05-07T21:24:00.515968"
+}

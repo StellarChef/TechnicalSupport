@@ -1,0 +1,122 @@
+[
+  {
+    "test_case": {
+      "name": "Bateria przeciekająca",
+      "issue_topic": "Uszkodzona bateria w łazience",
+      "expected_damage_cause": "Uszkodzenie amortyzacyjne",
+      "expected_responsibility": "landlord"
+    },
+    "verification_result": {
+      "damage_cause": "Uszkodzenie amortyzacyjne",
+      "confidence_percentage": 80,
+      "detected_element": "bateria łazienkowa",
+      "damage_description": "Bateria łazienkowa przecieka przy podstawie i powoduje zalewanie blatu.",
+      "repair_steps": "Sprawdź uszczelnienia, wymień uszczelkę lub baterię i przetestuj szczelność pod ciśnieniem.",
+      "estimated_cost_pln": 300,
+      "repair_durability": "wysoka",
+      "repair_difficulty": "niski"
+    },
+    "cost_result": {
+      "responsibility": "landlord",
+      "final_cost_pln": 350,
+      "cost_breakdown": {
+        "labor": 210,
+        "materials": 140
+      },
+      "cost_validation": "underestimated",
+      "reasoning": "Responsibility set to landlord based on damage cause. Final cost calculated from baseline 300 PLN and market references. Search output contained a market indication of 350 PLN."
+    },
+    "execution_time": 8.726119995117188e-05,
+    "timestamp": "2026-05-07T21:24:00.517371"
+  },
+  {
+    "test_case": {
+      "name": "Pęknięta szyba",
+      "issue_topic": "Pęknięta szyba balkonowa",
+      "expected_damage_cause": "Uszkodzenie mechaniczne",
+      "expected_responsibility": "tenant"
+    },
+    "verification_result": {
+      "damage_cause": "Uszkodzenie mechaniczne",
+      "confidence_percentage": 80,
+      "detected_element": "szyba balkonowa",
+      "damage_description": "Na szybie balkonowej widoczne jest pęknięcie w dolnej części tafli.",
+      "repair_steps": "Wymień szybę po oględzinach i usuń uszkodzoną taflę, zabezpiecz nowe szkło.",
+      "estimated_cost_pln": 650,
+      "repair_durability": "średnia",
+      "repair_difficulty": "średni"
+    },
+    "cost_result": {
+      "responsibility": "tenant",
+      "final_cost_pln": 800,
+      "cost_breakdown": {
+        "labor": 480,
+        "materials": 320
+      },
+      "cost_validation": "underestimated",
+      "reasoning": "Responsibility set to tenant based on damage cause. Final cost calculated from baseline 650 PLN and market references. Search output contained a market indication of 800 PLN."
+    },
+    "execution_time": 8.392333984375e-05,
+    "timestamp": "2026-05-07T21:24:00.519756"
+  },
+  {
+    "test_case": {
+      "name": "Zatkany odpływ",
+      "issue_topic": "Zatkany odpływ w kuchni",
+      "expected_damage_cause": "Uszkodzenie amortyzacyjne",
+      "expected_responsibility": "landlord"
+    },
+    "verification_result": {
+      "damage_cause": "Uszkodzenie amortyzacyjne",
+      "confidence_percentage": 86,
+      "detected_element": "odpływ kuchenny",
+      "damage_description": "Odpływ w zlewie kuchennym jest zatkany i woda spływa bardzo wolno.",
+      "repair_steps": "Oczyść syfon, udrożnij odpływ i sprawdź przelew oraz szczelność po naprawie.",
+      "estimated_cost_pln": 220,
+      "repair_durability": "wysoka",
+      "repair_difficulty": "niski"
+    },
+    "cost_result": {
+      "responsibility": "landlord",
+      "final_cost_pln": 250,
+      "cost_breakdown": {
+        "labor": 150,
+        "materials": 100
+      },
+      "cost_validation": "valid",
+      "reasoning": "Responsibility set to landlord based on damage cause. Final cost calculated from baseline 220 PLN and market references. Search output contained a market indication of 250 PLN."
+    },
+    "execution_time": 6.413459777832031e-05,
+    "timestamp": "2026-05-07T21:24:00.520199"
+  },
+  {
+    "test_case": {
+      "name": "Wyrwany zawias",
+      "issue_topic": "Wyrwany zawias drzwiowy",
+      "expected_damage_cause": "Uszkodzenie mechaniczne",
+      "expected_responsibility": "tenant"
+    },
+    "verification_result": {
+      "damage_cause": "Uszkodzenie mechaniczne",
+      "confidence_percentage": 68,
+      "detected_element": "zawias drzwiowy",
+      "damage_description": "Zawias drzwiowy został wyrwany z futryny.",
+      "repair_steps": "Zidentyfikuj uszkodzony element, dobierz części i wykonaj naprawę zgodnie ze specyfikacją.",
+      "estimated_cost_pln": 300,
+      "repair_durability": "średnia",
+      "repair_difficulty": "średni"
+    },
+    "cost_result": {
+      "responsibility": "tenant",
+      "final_cost_pln": 300,
+      "cost_breakdown": {
+        "labor": 180,
+        "materials": 120
+      },
+      "cost_validation": "valid",
+      "reasoning": "Responsibility set to tenant based on damage cause. Final cost calculated from baseline 300 PLN and market references. Search output contained a market indication of 150 PLN."
+    },
+    "execution_time": 0.0001614093780517578,
+    "timestamp": "2026-05-07T21:24:00.520678"
+  }
+]

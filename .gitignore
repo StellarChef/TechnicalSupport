@@ -1,0 +1,18 @@
+# Local environment files (do not commit)
+.env
+.venv/
+node_modules/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.sqlite3
+*.log
+check_output.txt
+.DS_Store
+
+# Backend specific
+technical_veryfication_backend/app/db.sqlite3
+technical_veryfication_backend/app/static/
+
