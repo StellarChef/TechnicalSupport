@@ -33,7 +33,7 @@ class PromptService:
     def build_cost_estimation_prompt(
         input_data: Dict[str, Any], search_results: str
     ) -> str:
-        prompt = PromptService.load_prompt_file("Prompt2-Cost-Estimation")
+        prompt = PromptService.load_prompt_file("Prompt2-Cost-Estimation.txt")
         prompt = prompt.replace(
             "{input_data}",
             json.dumps(input_data, ensure_ascii=False, indent=2),
