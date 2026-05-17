@@ -2,7 +2,7 @@ import { Eye, Mail } from "lucide-react";
 
 import { formatDate } from "../../utils/formatters";
 
-import StatusBadge from "../badges/StatusBadge";
+import ApprovalBadge from "../badges/ApprovalBadge";
 import ConfidenceBadge from "../badges/ConfidenceBadge";
 import ResponsibilityBadge from "../badges/ResponsibilityBadge";
 
@@ -67,13 +67,12 @@ export default function CasesMatrixTable({
               <th className="px-4 py-4">Temat</th>
               <th className="px-4 py-4">Kategoria AI</th>
               <th className="px-4 py-4">Typ</th>
-              <th className="px-4 py-4">Status</th>
+              <th className="px-4 py-4">Zatwierdzenie</th>
               <th className="px-4 py-4">Koszt po stronie</th>
               <th className="px-4 py-4">Robocizna</th>
               <th className="px-4 py-4">Materiał</th>
               <th className="px-4 py-4">Suma</th>
               <th className="px-4 py-4">AI</th>
-              <th className="px-4 py-4">Feedback</th>
               <th className="px-4 py-4">Mail</th>
               <th className="px-4 py-4">Akcje</th>
             </tr>
@@ -126,7 +125,7 @@ export default function CasesMatrixTable({
                   </td>
 
                   <td className="px-4 py-4">
-                    <StatusBadge status={item.status} />
+                    <ApprovalBadge approved={item.approved} />
                   </td>
 
                   <td className="px-4 py-4">
@@ -149,15 +148,11 @@ export default function CasesMatrixTable({
                     <ConfidenceBadge value={item.aiClassification.confidence} />
                   </td>
 
-                  <td className="px-4 py-4 text-sm text-darkGray">
-                    {item.feedback.rating ? `${item.feedback.rating}/5` : "Brak"}
-                  </td>
-
                   <td className="px-4 py-4">
                     {item.mail.shouldGenerate ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-backgroundLight px-3 py-1 text-xs font-semibold text-appBlack">
                         <Mail size={13} />
-                        {item.mail.status}
+                        Szkic
                       </span>
                     ) : (
                       <span className="text-xs text-darkGray">Nie wymagany</span>

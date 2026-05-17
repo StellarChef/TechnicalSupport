@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { initialCases } from "./data/cases";
 
 import TopNavigation from "./components/layout/TopNavigation";
 import KpiCards from "./components/dashboard/KpiCards";
@@ -9,20 +8,23 @@ import CaseDetailsDrawer from "./components/details/CaseDetailsDrawer";
 import NewCaseDrawer from "./components/forms/NewCaseDrawer";
 import MailPreviewModal from "./components/mail/MailPreviewModal";
 
+const EMPTY_FILTERS = {
+  query: "",
+  approval: "all",
+  responsibility: "all",
+  category: "all",
+  aiConfidence: "all",
+};
+
 export default function App() {
-  const [cases] = useState(initialCases);
+  // Lista case'ów będzie zasilona z backendu w kolejnym kroku — na razie pusta.
+  const [cases] = useState([]);
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
   const [newCaseOpen, setNewCaseOpen] = useState(false);
   const [mailCase, setMailCase] = useState(null);
 
-  const [filters, setFilters] = useState({
-    query: "",
-    status: "all",
-    responsibility: "all",
-    category: "all",
-    aiConfidence: "all",
-  });
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
 
   const filteredCases = useMemo(() => {
     return cases.filter((item) => {
@@ -32,10 +34,12 @@ export default function App() {
         !query ||
         item.id.toLowerCase().includes(query) ||
         item.title.toLowerCase().includes(query) ||
-        item.damageDescription.toLowerCase().includes(query);
+        (item.damageDescription || "").toLowerCase().includes(query);
 
-      const matchesStatus =
-        filters.status === "all" || item.status === filters.status;
+      const matchesApproval =
+        filters.approval === "all" ||
+        (filters.approval === "approved" && item.approved) ||
+        (filters.approval === "pending" && !item.approved);
 
       const matchesResponsibility =
         filters.responsibility === "all" ||
@@ -43,18 +47,17 @@ export default function App() {
 
       const matchesCategory =
         filters.category === "all" ||
-        item.aiClassification.category === filters.category;
+        item.aiClassification?.category === filters.category;
 
+      const confidence = item.aiClassification?.confidence ?? 0;
       const matchesAi =
         filters.aiConfidence === "all" ||
-        (filters.aiConfidence === "low" &&
-          item.aiClassification.confidence < 0.7) ||
-        (filters.aiConfidence === "high" &&
-          item.aiClassification.confidence >= 0.7);
+        (filters.aiConfidence === "low" && confidence < 0.7) ||
+        (filters.aiConfidence === "high" && confidence >= 0.7);
 
       return (
         matchesQuery &&
-        matchesStatus &&
+        matchesApproval &&
         matchesResponsibility &&
         matchesCategory &&
         matchesAi
@@ -62,40 +65,24 @@ export default function App() {
     });
   }, [cases, filters]);
 
-  const openCount = cases.filter((item) => item.status !== "closed").length;
+  const openCount = cases.filter((item) => !item.approved).length;
 
   const lowAiCount = cases.filter(
-    (item) => item.aiClassification.confidence < 0.7
+    (item) => (item.aiClassification?.confidence ?? 0) < 0.7
   ).length;
 
-  const resetFilters = () => {
-    setFilters({
-      query: "",
-      status: "all",
-      responsibility: "all",
-      category: "all",
-      aiConfidence: "all",
-    });
-  };
+  const resetFilters = () => setFilters(EMPTY_FILTERS);
 
   const handleShortcut = (shortcut) => {
     if (shortcut === "all") resetFilters();
-
-    if (shortcut === "ai_review") {
-      setFilters((prev) => ({ ...prev, status: "ai_review" }));
-    }
-
-    if (["owner", "tenant", "unresolved"].includes(shortcut)) {
+    if (shortcut === "pending")
+      setFilters((prev) => ({ ...prev, approval: "pending" }));
+    if (shortcut === "approved")
+      setFilters((prev) => ({ ...prev, approval: "approved" }));
+    if (["owner", "tenant", "unresolved"].includes(shortcut))
       setFilters((prev) => ({ ...prev, responsibility: shortcut }));
-    }
-
-    if (shortcut === "low_ai") {
+    if (shortcut === "low_ai")
       setFilters((prev) => ({ ...prev, aiConfidence: "low" }));
-    }
-
-    if (shortcut === "closed") {
-      setFilters((prev) => ({ ...prev, status: "closed" }));
-    }
   };
 
   return (

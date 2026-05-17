@@ -7,9 +7,9 @@ export default function KpiCards({ cases, onShortcut }) {
       filter: "all",
     },
     {
-      label: "Do weryfikacji AI",
-      value: cases.filter((item) => item.status === "ai_review").length,
-      filter: "ai_review",
+      label: "Do zatwierdzenia",
+      value: cases.filter((item) => !item.approved).length,
+      filter: "pending",
     },
     {
       label: "Koszt po stronie właściciela",
@@ -34,9 +34,9 @@ export default function KpiCards({ cases, onShortcut }) {
       filter: "low_ai",
     },
     {
-      label: "Zamknięte",
-      value: cases.filter((item) => item.status === "closed").length,
-      filter: "closed",
+      label: "Zatwierdzone",
+      value: cases.filter((item) => item.approved).length,
+      filter: "approved",
     },
   ];
 
@@ -53,4 +53,5 @@ export default function KpiCards({ cases, onShortcut }) {
         </button>
       ))}
     </section>
-  )}
+  );
+}

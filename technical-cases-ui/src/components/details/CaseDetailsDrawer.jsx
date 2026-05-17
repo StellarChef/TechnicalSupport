@@ -1,10 +1,9 @@
-
 import { X } from "lucide-react";
 import { formatDate } from "../../utils/formatters.js";
 
 import Card from "../shared/Card";
 import Info from "../shared/Info";
-import StatusBadge from "../badges/StatusBadge";
+import ApprovalBadge from "../badges/ApprovalBadge";
 import ResponsibilityBadge from "../badges/ResponsibilityBadge";
 
 import CasePhotoPreview from "./CasePhotoPreview";
@@ -12,7 +11,6 @@ import CostBreakdownCard from "./CostBreakdownCard";
 import AiClassificationCard from "./AiClassificationCard";
 import AiCorrectionForm from "./AiCorrectionForm";
 import MailPanel from "./MailPanel";
-import FeedbackForm from "./FeedbackForm";
 import CaseHistoryTimeline from "./CaseHistoryTimeline";
 
 export default function CaseDetailsDrawer({
@@ -53,10 +51,10 @@ export default function CaseDetailsDrawer({
 
         <div className="space-y-5">
           <Card title="Dane sprawy">
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2">
               <Info
-                label="Status"
-                value={<StatusBadge status={selectedCase.status} />}
+                label="Zatwierdzenie"
+                value={<ApprovalBadge approved={selectedCase.approved} />}
               />
 
               <Info
@@ -71,17 +69,27 @@ export default function CaseDetailsDrawer({
                 value={formatDate(selectedCase.createdAt)}
               />
             </div>
+          </Card>
 
-            <div className="mt-5 grid gap-4 md:grid-cols-2">
-              <Info
-                label="Co jest uszkodzone"
-                value={selectedCase.damageDescription}
-              />
+          <Card title="Opis usterki">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl bg-backgroundLight p-4">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-darkGray">
+                  Co zostało uszkodzone
+                </p>
+                <p className="text-sm leading-relaxed text-appBlack">
+                  {selectedCase.damageDescription}
+                </p>
+              </div>
 
-              <Info
-                label="Co należy naprawić"
-                value={selectedCase.repairDescription}
-              />
+              <div className="rounded-2xl bg-backgroundLight p-4">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-darkGray">
+                  Jak to naprawić
+                </p>
+                <p className="text-sm leading-relaxed text-appBlack">
+                  {selectedCase.repairDescription}
+                </p>
+              </div>
             </div>
           </Card>
 
@@ -90,8 +98,6 @@ export default function CaseDetailsDrawer({
           <AiCorrectionForm selectedCase={selectedCase} />
 
           <MailPanel selectedCase={selectedCase} onOpenMail={onOpenMail} />
-
-          <FeedbackForm />
         </div>
       </div>
     </aside>

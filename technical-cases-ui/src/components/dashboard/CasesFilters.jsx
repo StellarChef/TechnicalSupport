@@ -13,7 +13,7 @@ export default function CasesFilters({ filters, setFilters, onClear }) {
         <div>
           <h2 className="text-lg font-bold text-appBlack">Filtry</h2>
           <p className="text-sm text-darkGray">
-            Szukaj po ID, temacie, opisie, statusie, kosztach i AI.
+            Szukaj po ID, temacie, opisie, kosztach i klasyfikacji AI.
           </p>
         </div>
         <SlidersHorizontal className="text-darkGray" size={20} />
@@ -42,16 +42,15 @@ export default function CasesFilters({ filters, setFilters, onClear }) {
         </label>
 
         <SelectFilter
-          label="Status"
-          value={filters.status}
+          label="Zatwierdzenie"
+          value={filters.approval}
           onChange={(value) =>
-            setFilters((prev) => ({ ...prev, status: value }))
+            setFilters((prev) => ({ ...prev, approval: value }))
           }
           options={[
             ["all", "Wszystkie"],
-            ["ai_review", "Do weryfikacji AI"],
-            ["verification", "Weryfikacja"],
-            ["closed", "Zamknięte"],
+            ["pending", "Do zatwierdzenia"],
+            ["approved", "Zatwierdzone"],
           ]}
         />
 
