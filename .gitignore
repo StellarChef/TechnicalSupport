@@ -1,18 +1,139 @@
-# Local environment files (do not commit)
+# ── Sekrety i konfiguracja środowiska ──────────────────────────────────────
+# NIGDY nie commituj .env — sekrety produkcyjne wyciekły by do repo.
 .env
-.venv/
-node_modules/
-**/__pycache__/
-*.pyc
-*.pyo
-*.pyd
-__pycache__/
-*.sqlite3
-*.log
-check_output.txt
-.DS_Store
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.staging
+*.env
 
-# Backend specific
-technical_veryfication_backend/app/db.sqlite3
+# ── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.eggs/
+*.egg-info/
+*.egg
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ── Wirtualne środowiska Python ────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ── Testy / lintery / coverage ─────────────────────────────────────────────
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+nosetests.xml
+
+# ── Django ─────────────────────────────────────────────────────────────────
+*.sqlite3
+*.sqlite3-journal
+db.sqlite3
+local_settings.py
+celerybeat-schedule
+celerybeat.pid
+# Pliki uploadowane przez użytkowników (lokalne) — w prod powinien być wolumin/CDN.
+technical_veryfication_backend/app/media/
+# Skompilowane statics (Django collectstatic) — generowane.
+technical_veryfication_backend/app/staticfiles/
 technical_veryfication_backend/app/static/
 
+# ── Node / Vite / React ────────────────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+.vite/
+.parcel-cache/
+.turbo/
+.cache/
+*.local
+
+# ── Logi pakietów Node ─────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Logi ogólne ────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── Docker ─────────────────────────────────────────────────────────────────
+# Lokalne override'y compose (każdy dev może mieć swoje porty/wolumeny).
+docker-compose.override.yml
+docker-compose.override.yaml
+
+# ── IDE: VSCode ────────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# ── IDE: JetBrains (PyCharm, WebStorm, IntelliJ) ───────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ── Edytory: vim, sublime, emacs ───────────────────────────────────────────
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ── System operacyjny ──────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── Claude Code / asystenci AI (lokalna pamięć, worktree, logi) ────────────
+.claude/
+
+# ── Tymczasowe i debugowe ──────────────────────────────────────────────────
+*.tmp
+*.bak
+*.orig
+check_output.txt
+# Snapshoty testów pipelinu — regenerowane.
+technical_veryfication_backend/app/prompts/tests/test_results.json
