@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { fetchCases } from "./api/cases";
 import TopNavigation from "./components/layout/TopNavigation";
 import KpiCards from "./components/dashboard/KpiCards";
 import CasesFilters from "./components/dashboard/CasesFilters";
@@ -17,14 +18,52 @@ const EMPTY_FILTERS = {
 };
 
 export default function App() {
-  // Lista case'ów będzie zasilona z backendu w kolejnym kroku — na razie pusta.
-  const [cases] = useState([]);
+  const [cases, setCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [selectedCase, setSelectedCase] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
   const [newCaseOpen, setNewCaseOpen] = useState(false);
   const [mailCase, setMailCase] = useState(null);
 
   const [filters, setFilters] = useState(EMPTY_FILTERS);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+
+    fetchCases()
+      .then((data) => {
+        if (!cancelled) setCases(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || "Nie udało się pobrać spraw.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleCaseCreated = (newCase) => {
+    setCases((prev) => [newCase, ...prev]);
+    setNewCaseOpen(false);
+    setSelectedCase(newCase);
+  };
+
+  const handleCaseUpdated = (updatedCase) => {
+    setCases((prev) =>
+      prev.map((c) => (c.id === updatedCase.id ? updatedCase : c))
+    );
+    // Jeśli akurat ten case jest otwarty w drawerze — odśwież widok.
+    setSelectedCase((current) =>
+      current && current.id === updatedCase.id ? updatedCase : current
+    );
+  };
 
   const filteredCases = useMemo(() => {
     return cases.filter((item) => {
@@ -97,6 +136,12 @@ export default function App() {
       />
 
       <main className="mx-auto max-w-[1600px] space-y-5 px-6 py-6">
+        {error && (
+          <div className="rounded-app bg-white p-4 text-sm font-semibold text-red-700 shadow-card">
+            Nie udało się pobrać spraw z backendu: {error}
+          </div>
+        )}
+
         <KpiCards cases={cases} onShortcut={handleShortcut} />
 
         <CasesFilters
@@ -105,21 +150,32 @@ export default function App() {
           onClear={resetFilters}
         />
 
-        <CasesMatrixTable
-          cases={filteredCases}
-          selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
-          onOpenCase={setSelectedCase}
-        />
+        {loading ? (
+          <div className="rounded-app bg-white p-6 text-center text-sm text-darkGray shadow-card">
+            Ładowanie spraw z bazy...
+          </div>
+        ) : (
+          <CasesMatrixTable
+            cases={filteredCases}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            onOpenCase={setSelectedCase}
+          />
+        )}
       </main>
 
       <CaseDetailsDrawer
         selectedCase={selectedCase}
         onClose={() => setSelectedCase(null)}
         onOpenMail={setMailCase}
+        onCaseUpdated={handleCaseUpdated}
       />
 
-      <NewCaseDrawer open={newCaseOpen} onClose={() => setNewCaseOpen(false)} />
+      <NewCaseDrawer
+        open={newCaseOpen}
+        onClose={() => setNewCaseOpen(false)}
+        onCaseCreated={handleCaseCreated}
+      />
 
       <MailPreviewModal caseItem={mailCase} onClose={() => setMailCase(null)} />
     </div>

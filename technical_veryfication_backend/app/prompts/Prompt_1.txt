@@ -1,0 +1,18 @@
+# PROMPT 1 — Element Detector
+
+## Zadanie
+Zidentyfikuj uszkodzony element na podstawie zdjęcia i opisu usterki.
+
+## Dane wejściowe
+Temat usterki: [opis przekazany przez użytkownika]
+Zdjęcia: [załączone obrazy]
+
+## Instrukcja
+1. Zlokalizuj uszkodzony obiekt na zdjęciu
+2. Nazwij element technicznie i potocznie
+3. Opisz jego aktualny stan wizualny
+
+## Output — uzupełnij tylko te pola
+{
+  "detected_element": ""
+}

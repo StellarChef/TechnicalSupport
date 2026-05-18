@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
@@ -22,3 +24,9 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
 ]
+
+# W dev serwuj uploadowane pliki bezpośrednio przez Django.
+# Produkcyjnie ta linia nic nie robi (DEBUG=False) — pliki powinno serwować
+# nginx/CDN, ale dla MVP wystarczy.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

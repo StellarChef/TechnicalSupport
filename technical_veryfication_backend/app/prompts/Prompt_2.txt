@@ -1,0 +1,22 @@
+# PROMPT 2 — Damage Classifier
+
+## Dane wejściowe
+{output z Prompt 1}
+
+## Zadanie
+Na podstawie zdjęcia, opisu i wykrytego elementu określ przyczynę usterki.
+
+## Instrukcja
+1. Sprawdź czy uszkodzenie nosi ślady uderzenia, szarpnięcia, przeciążenia
+   lub czy jest efektem stopniowej degradacji
+2. Oceń scenariusz:
+   - Jednorazowy incydent → ślady lokalne, nagłe, wyraźne
+   - Amortyzacja → zmiany rozproszone, stopniowe, brak wyraźnego punktu urazu
+3. Przypisz kategorię i podaj pewność decyzji w %
+
+## Output — uzupełnij tylko te pola
+{
+  "damage_cause": "Uszkodzenie mechaniczne / Uszkodzenie amortyzacyjne",
+  "confidence_percentage": 0,
+  "damage_description": ""
+}

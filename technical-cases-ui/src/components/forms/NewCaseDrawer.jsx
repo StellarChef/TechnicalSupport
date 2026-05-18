@@ -2,39 +2,54 @@ import { useState } from "react";
 import { X, Sparkles } from "lucide-react";
 import Card from "../shared/Card";
 import PhotoUploader from "./PhotoUploader";
-import VerificationResultsCard from "./VerificationResultsCard";
-import { analyzeImageForDamage } from "../../utils/damageAnalysis";
+import { createCase, uploadPhoto } from "../../api/cases";
 
-export default function NewCaseDrawer({ open, onClose }) {
+export default function NewCaseDrawer({ open, onClose, onCaseCreated }) {
   const [photos, setPhotos] = useState([]);
-  const [analysis, setAnalysis] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [formData, setFormData] = useState({
-    title: "",
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({ title: "" });
 
   if (!open) return null;
 
-  const handleSendToAi = async () => {
-    if (!formData.title || photos.length === 0) return;
+  const resetForm = () => {
+    setPhotos([]);
+    setFormData({ title: "" });
+    setError(null);
+  };
 
-    setIsAnalyzing(true);
-    setAnalysis(null);
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.title || isSubmitting) return;
+
+    setIsSubmitting(true);
+    setError(null);
 
     try {
-      const casePayload = {
-        title: formData.title,
-        photos: photos.map((photo) => photo.file),
-        prompt: `Przeanalizuj uszkodzenia na podstawie tematu zgłoszenia: ${formData.title}`,
-      };
+      // 1. Najpierw wgraj wszystkie pliki do backendu, zbierz URL-e.
+      //    Promise.all → uploady lecą równolegle (szybciej niż sekwencyjnie).
+      const uploadedUrls = await Promise.all(
+        photos.map((photo) => uploadPhoto(photo.file).then((res) => res.url))
+      );
 
-      // TODO: zastąp mockowe wywołanie realnym endpointem backendowym
-      const result = await analyzeImageForDamage(casePayload);
-      setAnalysis(result);
-    } catch (error) {
-      console.error("Błąd analizy AI:", error);
+      // 2. Utwórz case z URL-ami zdjęć — pipeline AI dostanie do analizy.
+      const newCase = await createCase({
+        title: formData.title,
+        photos: uploadedUrls,
+        damageDescription: "",
+      });
+
+      onCaseCreated?.(newCase);
+      resetForm();
+    } catch (err) {
+      console.error("Błąd tworzenia sprawy:", err);
+      setError(err.message || "Nie udało się utworzyć sprawy.");
     } finally {
-      setIsAnalyzing(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -49,7 +64,7 @@ export default function NewCaseDrawer({ open, onClose }) {
         </div>
 
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-appBlack shadow-card"
         >
           <X size={18} />
@@ -57,17 +72,12 @@ export default function NewCaseDrawer({ open, onClose }) {
       </div>
 
       <div className="space-y-5 p-6">
-        {/* Sekcja zdjęć z AI analizą */}
         <Card title="Dodaj zdjęcia do analizy">
           <PhotoUploader photos={photos} setPhotos={setPhotos} />
+          <p className="mt-3 text-xs text-darkGray">
+            Zdjęcia zostaną wgrane do backendu i przekazane do analizy AI.
+          </p>
         </Card>
-
-        {/* Wyniki analizy AI */}
-        {analysis && (
-          <Card title="Wyniki weryfikacji AI">
-            <VerificationResultsCard analysis={analysis} />
-          </Card>
-        )}
 
         <Card title="Dane zgłoszenia">
           <div className="space-y-4">
@@ -93,26 +103,28 @@ export default function NewCaseDrawer({ open, onClose }) {
           </div>
         </Card>
 
+        {error && (
+          <div className="rounded-2xl bg-red-50 p-4 text-sm font-semibold text-red-800">
+            {error}
+          </div>
+        )}
+
         <div className="flex flex-wrap justify-end gap-3">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="rounded-full border border-neutralGray px-5 py-2.5 text-sm font-semibold text-appBlack hover:bg-backgroundLight"
           >
             Anuluj
           </button>
 
-          <button className="rounded-full border border-neutralGray px-5 py-2.5 text-sm font-semibold text-appBlack hover:bg-backgroundLight">
-            Zapisz jako szkic
-          </button>
-
           <button
             type="button"
-            onClick={handleSendToAi}
-            disabled={!formData.title || photos.length === 0 || isAnalyzing}
+            onClick={handleSubmit}
+            disabled={!formData.title || isSubmitting}
             className="inline-flex items-center gap-2 rounded-full bg-primaryDark px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-50 hover:bg-primaryDark/90"
           >
             <Sparkles size={17} />
-            {isAnalyzing ? "Analizuję..." : "Wyślij do analizy AI"}
+            {isSubmitting ? "Tworzę sprawę..." : "Utwórz sprawę (AI)"}
           </button>
         </div>
       </div>

@@ -1,0 +1,25 @@
+# PROMPT 5 — JSON Aggregator
+
+## Dane wejściowe
+{output z Prompt 1 + Prompt 2 + Prompt 3 + Prompt 4}
+
+## Zadanie
+Połącz wszystkie outputy w jeden finalny JSON.
+Nie wnioskuj, nie zmieniaj wartości — tylko agreguj.
+
+## Output — finalny kompletny JSON
+{
+  "damage_cause": "",
+  "confidence_percentage": 0,
+  "detected_element": "",
+  "damage_description": "",
+  "repair_steps": "",
+  "repair_durability": "",
+  "repair_difficulty": "",
+  "cost": {
+    "labor": 0,
+    "materials": 0,
+    "total": 0,
+    "currency": "PLN"
+  }
+}

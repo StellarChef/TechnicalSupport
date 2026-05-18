@@ -1,0 +1,24 @@
+# PROMPT 4 — Cost Estimator
+
+## Dane wejściowe
+{output z Prompt 1 + Prompt 2 + Prompt 3}
+
+## Zadanie
+Oszacuj realistyczne koszty naprawy w Polsce (PLN) i zwróć pojedynczą wartość.
+
+## Instrukcja
+1. Wyszukaj aktualne ceny materiałów (Allegro, OBI, Leroy Merlin, Castorama)
+2. Wyszukaj aktualne stawki robocizny (Oferteo, Fixly, OLX usługi)
+3. Znajdź widełki rynkowe min/max — użyj ich tylko wewnętrznie
+4. Zwróć wartość środkową zaokrągloną do 10 PLN
+5. Nie zwracaj widełek — tylko finalną pojedynczą wartość
+
+## Output — uzupełnij tylko te pola
+{
+  "cost": {
+    "labor": 0,
+    "materials": 0,
+    "total": 0,
+    "currency": "PLN"
+  }
+}

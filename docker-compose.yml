@@ -1,4 +1,22 @@
 services:
+  db:
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./technical_veryfication_backend/app
@@ -9,10 +27,18 @@ services:
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
       - DJANGO_DEBUG=${DJANGO_DEBUG}
       - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_HOST=db
+      - DB_PORT=5432
     volumes:
       - ./technical_veryfication_backend/app:/app
     ports:
       - "${BACKEND_PORT}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
     command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
 
   frontend:
@@ -33,3 +59,4 @@ services:
 
 volumes:
   node_modules_frontend:
+  postgres_data:

@@ -105,3 +105,39 @@ class CaseHistoryEvent(models.Model):
 
     def __str__(self):
         return f"{self.event_type} @ {self.case.case_id}"
+
+
+class KnowledgeBaseEntry(models.Model):
+    """Zatwierdzona sprawa zachowana jako referencja dla AI przy kolejnych
+    weryfikacjach — "pamięć trwała" odróżniana od operacyjnej listy spraw.
+
+    Powstaje przy zatwierdzaniu case'a (`POST /api/cases/<id>/approve/`).
+    Pipeline `PromptService` pobiera ostatnie wpisy i wstrzykuje je jako
+    kontekst do promptów detect/classify, żeby AI uczyło się z decyzji
+    koordynatora bez kosztu fine-tuningu.
+    """
+
+    source_case = models.ForeignKey(
+        Case,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="kb_entries",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    detected_element = models.CharField(max_length=120)
+    damage_cause = models.CharField(max_length=120)
+    damage_description = models.TextField()
+    repair_steps = models.TextField()
+    cost_total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    cost_currency = models.CharField(max_length=8, default="PLN")
+    responsibility = models.CharField(max_length=16, blank=True)
+    coordinator_note = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name_plural = "Knowledge base entries"
+
+    def __str__(self):
+        source = self.source_case.case_id if self.source_case else "—"
+        return f"KB#{self.pk} ({self.detected_element}) z {source}"

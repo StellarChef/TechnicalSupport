@@ -1,0 +1,23 @@
+# PROMPT 3 — Repair Specialist
+
+## Dane wejściowe
+{output z Prompt 1 + Prompt 2}
+
+## Zadanie
+Znajdź optymalne rozwiązanie naprawy wykrytej usterki.
+
+## Instrukcja
+1. Wczytaj wykryty element i przyczynę uszkodzenia
+2. Wygeneruj możliwe ścieżki naprawy
+3. Dla każdej oceń:
+   - Trwałość rozwiązania
+   - Trudność wykonania
+4. Zwróć wyłącznie najtrwalsze rozwiązanie eliminujące ryzyko powtórzenia problemu
+5. Repair steps max 50 słów, kroki ponumerowane
+
+## Output — uzupełnij tylko te pola
+{
+  "repair_steps": "",
+  "repair_durability": "",
+  "repair_difficulty": ""
+}
