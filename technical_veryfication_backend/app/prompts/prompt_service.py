@@ -3,18 +3,18 @@ Pipeline weryfikacji usterek (LangChain).
 
 Pięć etapów, jeden plik promptu na etap, wspólny system_prompt:
 
-  1. detect_element     — Prompt_1: identyfikacja uszkodzonego elementu
-  2. classify_damage    — Prompt_2: przyczyna (mechaniczna / amortyzacyjna)
-  3. propose_repair     — Prompt_3: najtrwalsza ścieżka naprawy
-  4. estimate_cost      — Prompt_4: koszt finalny (PLN, single value)
-  5. aggregate          — Prompt_5: DETERMINISTYCZNY merge (bez LLM)
+  1. detect_element     - Prompt_1: identyfikacja uszkodzonego elementu
+  2. classify_damage    - Prompt_2: przyczyna (mechaniczna / amortyzacyjna)
+  3. propose_repair     - Prompt_3: najtrwalsza ścieżka naprawy
+  4. estimate_cost      - Prompt_4: koszt finalny (PLN, single value)
+  5. aggregate          - Prompt_5: DETERMINISTYCZNY merge (bez LLM)
 
-Wszystkie wywołania LLM używają `with_structured_output(pydantic_schema)` —
+Wszystkie wywołania LLM używają `with_structured_output(pydantic_schema)` -
 brak ręcznego parsowania JSON.
 
 Bonus poza schematem promptów (deterministycznie): `responsibility` jest
 wyprowadzane z damage_cause (mechaniczne → tenant, amortyzacyjne → landlord)
-— wymagane przez front i model Django, a nie zwracane przez żaden z 5 promptów.
+- wymagane przez front i model Django, a nie zwracane przez żaden z 5 promptów.
 
 Klucz API: AI_API_KEY ładowany z `.env` w roocie projektu.
 """
@@ -30,7 +30,7 @@ from pydantic import BaseModel, Field
 
 # ── .env loader ─────────────────────────────────────────────────────────────
 # Poza Dockerem dotenv sam znajdzie `.env` w drzewie (find_dotenv).
-# W kontenerze zmienne wstrzykuje compose przez `env_file` — load_dotenv()
+# W kontenerze zmienne wstrzykuje compose przez `env_file` - load_dotenv()
 # bez pliku to no-op, więc bezpiecznie wołać w obu środowiskach.
 load_dotenv()
 
@@ -39,7 +39,7 @@ BASE_PROMPTS_DIR = Path(__file__).resolve().parent
 
 # ── Schemy etapowe (output każdego LLM-calla) ───────────────────────────────
 class ElementDetection(BaseModel):
-    """Prompt 1 — Element Detector."""
+    """Prompt 1 - Element Detector."""
 
     detected_element: str = Field(
         description="Nazwa uszkodzonego elementu (technicznie i potocznie)"
@@ -47,7 +47,7 @@ class ElementDetection(BaseModel):
 
 
 class DamageClassification(BaseModel):
-    """Prompt 2 — Damage Classifier."""
+    """Prompt 2 - Damage Classifier."""
 
     damage_cause: str = Field(
         description="'Uszkodzenie mechaniczne' lub 'Uszkodzenie amortyzacyjne'"
@@ -57,7 +57,7 @@ class DamageClassification(BaseModel):
 
 
 class RepairProposal(BaseModel):
-    """Prompt 3 — Repair Specialist (najtrwalsze rozwiązanie)."""
+    """Prompt 3 - Repair Specialist (najtrwalsze rozwiązanie)."""
 
     repair_steps: str = Field(description="Numerowane kroki naprawy, max 50 słów")
     repair_durability: str = Field(
@@ -74,12 +74,12 @@ class CostBreakdown(BaseModel):
 
 
 class CostEstimate(BaseModel):
-    """Prompt 4 — Cost Estimator (single value, nie widełki)."""
+    """Prompt 4 - Cost Estimator (single value, nie widełki)."""
 
     cost: CostBreakdown
 
 
-# ── Wyjście pipelinu (po Prompt 5 — deterministyczny merge) ────────────────
+# ── Wyjście pipelinu (po Prompt 5 - deterministyczny merge) ────────────────
 class VerificationResult(BaseModel):
     damage_cause: str
     confidence_percentage: int
@@ -89,7 +89,7 @@ class VerificationResult(BaseModel):
     repair_durability: str
     repair_difficulty: str
     cost: CostBreakdown
-    # Pole spoza promptów — wyprowadzone z damage_cause.
+    # Pole spoza promptów - wyprowadzone z damage_cause.
     responsibility: str = Field(description="tenant | owner | unresolved")
 
 
@@ -99,7 +99,7 @@ class PromptService:
 
     # Defaulty czytane z .env (zmienne `AI_MODEL` i `AI_TEMPERATURE`), z fallbackiem
     # do bezpiecznych wartości deweloperskich gdy zmienne nie są ustawione.
-    DEFAULT_MODEL = os.environ.get("AI_MODEL", "gpt-4o-mini")
+    DEFAULT_MODEL = os.environ.get("AI_MODEL", "gpt-4o")
     DEFAULT_TEMPERATURE = float(os.environ.get("AI_TEMPERATURE", "0.1"))
 
     # ── Init ────────────────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ class PromptService:
         damage_description_hint: str = "",
         kb_context: str = "",
     ) -> VerificationResult:
-        """`kb_context` — opcjonalny blok tekstu z wcześniejszymi zatwierdzonymi
+        """`kb_context` - opcjonalny blok tekstu z wcześniejszymi zatwierdzonymi
         sprawami (z `KnowledgeBaseEntry`). Wstrzykiwany do promptów detect i
         classify, żeby AI uczyło się z decyzji koordynatora."""
         photos = photos or []
@@ -195,7 +195,7 @@ class PromptService:
             f"{kb_context}\n\n"
         )
 
-    # ── Etap 3 (z vision — naprawa dopasowana do widocznej skali) ──────────
+    # ── Etap 3 (z vision - naprawa dopasowana do widocznej skali) ──────────
     def propose_repair(
         self,
         issue_topic: str,
@@ -214,7 +214,7 @@ class PromptService:
         )
         return self._invoke(RepairProposal, "Prompt_3.txt", human, photos)
 
-    # ── Etap 4 (z vision — koszt zależny od skali widocznej na zdjęciu) ────
+    # ── Etap 4 (z vision - koszt zależny od skali widocznej na zdjęciu) ────
     def estimate_cost(
         self,
         issue_topic: str,
@@ -235,7 +235,7 @@ class PromptService:
         )
         return self._invoke(CostEstimate, "Prompt_4.txt", human, photos)
 
-    # ── Etap 5 — DETERMINISTYCZNY merge (bez LLM) ──────────────────────────
+    # ── Etap 5 - DETERMINISTYCZNY merge (bez LLM) ──────────────────────────
     @staticmethod
     def aggregate(
         detection: ElementDetection,
@@ -258,7 +258,7 @@ class PromptService:
         )
 
     # ── Reguła responsibility (deterministyczna, poza schematem promptów) ──
-    # "owner" = właściciel (front i model Django) — odpowiednik "landlord" w domenie.
+    # "owner" = właściciel (front i model Django) - odpowiednik "landlord" w domenie.
     @staticmethod
     def _derive_responsibility(damage_cause: str) -> str:
         cause = (damage_cause or "").lower()
@@ -289,7 +289,7 @@ class PromptService:
     ):
         """Wywołuje LLM: SystemMessage = System_Prompt + Prompt_N, HumanMessage
         = tekst + (opcjonalnie) image_url content blocks. `photos` to lista
-        dataURL-i (`data:image/jpeg;base64,...`) — view wcześniej zamienił
+        dataURL-i (`data:image/jpeg;base64,...`) - view wcześniej zamienił
         URL-e z MEDIA na bytes, bo OpenAI nie dotrze do localhost. URL-e
         nie-data są przepuszczane jako-jest (na wypadek publicznych linków)."""
         from langchain_core.messages import HumanMessage, SystemMessage
@@ -317,7 +317,7 @@ class PromptService:
 
     @staticmethod
     def _load_text(filename: str) -> str:
-        # SystemMessage przyjmuje surowy tekst — escape klamer nie jest potrzebny.
+        # SystemMessage przyjmuje surowy tekst - escape klamer nie jest potrzebny.
         return (BASE_PROMPTS_DIR / filename).read_text(encoding="utf-8")
 
     # ── Symulacje (fallback bez klucza API) ────────────────────────────────

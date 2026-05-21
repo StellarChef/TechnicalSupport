@@ -69,7 +69,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# CORS — dla dev domyślnie puszczamy lokalny Vite na :5173.
+# CORS - dla dev domyślnie puszczamy lokalny Vite na :5173.
 # Produkcyjnie nadpisz CORS_ALLOWED_ORIGINS w .env.
 CORS_ALLOWED_ORIGINS = [
     origin.strip()

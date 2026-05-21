@@ -25,7 +25,7 @@ export async function fetchCases() {
 
 export async function createCase({ title, photos = [], damageDescription = "" }) {
   // Backend oczekuje `photos` jako listy URL-i. Upload plików dodamy gdy
-  // pojawi się endpoint /api/upload-photo/ — na razie wysyłamy URL-e jeśli są
+  // pojawi się endpoint /api/upload-photo/ - na razie wysyłamy URL-e jeśli są
   // (zewnętrzne linki), albo pustą listę.
   const photoUrls = photos.filter((p) => typeof p === "string");
 
@@ -49,7 +49,7 @@ export async function approveCase(caseId, comment = "") {
 
 export async function correctCase(caseId, corrections) {
   // corrections: { category?, damage_type?, responsibility?, labor_cost?,
-  //                material_cost?, comment? } — wszystkie opcjonalne
+  //                material_cost?, comment? } - wszystkie opcjonalne
   return request(`/cases/${caseId}/correct/`, {
     method: "POST",
     body: JSON.stringify(corrections),
@@ -67,7 +67,7 @@ export async function uploadPhoto(file) {
   const formData = new FormData();
   formData.append("file", file);
 
-  // ⚠️ NIE ustawiamy Content-Type — przeglądarka sama doda multipart boundary.
+  // ⚠️ NIE ustawiamy Content-Type - przeglądarka sama doda multipart boundary.
   const response = await fetch(`${API_BASE}/upload-photo/`, {
     method: "POST",
     body: formData,

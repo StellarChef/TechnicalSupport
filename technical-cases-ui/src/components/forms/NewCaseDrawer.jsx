@@ -36,7 +36,7 @@ export default function NewCaseDrawer({ open, onClose, onCaseCreated }) {
         photos.map((photo) => uploadPhoto(photo.file).then((res) => res.url))
       );
 
-      // 2. Utwórz case z URL-ami zdjęć — pipeline AI dostanie do analizy.
+      // 2. Utwórz case z URL-ami zdjęć - pipeline AI dostanie do analizy.
       const newCase = await createCase({
         title: formData.title,
         photos: uploadedUrls,

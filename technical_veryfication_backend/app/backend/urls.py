@@ -26,7 +26,7 @@ urlpatterns = [
 ]
 
 # W dev serwuj uploadowane pliki bezpośrednio przez Django.
-# Produkcyjnie ta linia nic nie robi (DEBUG=False) — pliki powinno serwować
+# Produkcyjnie ta linia nic nie robi (DEBUG=False) - pliki powinno serwować
 # nginx/CDN, ale dla MVP wystarczy.
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

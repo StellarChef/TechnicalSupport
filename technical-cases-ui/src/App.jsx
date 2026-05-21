@@ -59,7 +59,7 @@ export default function App() {
     setCases((prev) =>
       prev.map((c) => (c.id === updatedCase.id ? updatedCase : c))
     );
-    // Jeśli akurat ten case jest otwarty w drawerze — odśwież widok.
+    // Jeśli akurat ten case jest otwarty w drawerze - odśwież widok.
     setSelectedCase((current) =>
       current && current.id === updatedCase.id ? updatedCase : current
     );

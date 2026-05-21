@@ -5,7 +5,7 @@ from .models import Case, CaseHistoryEvent, CasePhoto
 
 # ── Request serializery ────────────────────────────────────────────────────
 class VerifyCaseRequestSerializer(serializers.Serializer):
-    """Wejście dla `POST /api/verify-case/` — wynik surowy z pipelinu (debug/preview)."""
+    """Wejście dla `POST /api/verify-case/` - wynik surowy z pipelinu (debug/preview)."""
 
     issue_topic = serializers.CharField(max_length=200)
     photos = serializers.ListField(
@@ -20,7 +20,7 @@ class VerifyCaseRequestSerializer(serializers.Serializer):
 
 
 class CreateCaseRequestSerializer(serializers.Serializer):
-    """Wejście dla `POST /api/cases/create/` — pełny pipeline + zbudowanie case'a."""
+    """Wejście dla `POST /api/cases/create/` - pełny pipeline + zbudowanie case'a."""
 
     title = serializers.CharField(max_length=200)
     photos = serializers.ListField(
@@ -95,7 +95,7 @@ class CaseSerializer(serializers.ModelSerializer):
     aiClassification = serializers.SerializerMethodField()
     cost = serializers.SerializerMethodField()
     mail = serializers.SerializerMethodField()
-    # `approved` to BooleanField na modelu — DRF auto-serializuje, bez override.
+    # `approved` to BooleanField na modelu - DRF auto-serializuje, bez override.
 
     class Meta:
         model = Case

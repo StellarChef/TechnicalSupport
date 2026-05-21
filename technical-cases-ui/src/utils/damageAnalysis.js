@@ -1,4 +1,4 @@
-// Mock `analyzeImageForDamage` usunięty — analizę robi teraz backend przez
+// Mock `analyzeImageForDamage` usunięty - analizę robi teraz backend przez
 // `POST /api/cases/create/` (patrz `src/api/cases.js`).
 // Poniżej zostały tylko etykiety/kolory używane przez komponenty UI.
 

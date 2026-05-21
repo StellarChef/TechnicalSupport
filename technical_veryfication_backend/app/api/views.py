@@ -1,9 +1,9 @@
 """
 Endpoints:
-  POST /api/verify-case/   — uruchamia pipeline i zwraca SUROWY wynik (preview/debug)
-  POST /api/cases/create/  — uruchamia pipeline i zwraca OBIEKT CASE w kształcie frontu
+  POST /api/verify-case/   - uruchamia pipeline i zwraca SUROWY wynik (preview/debug)
+  POST /api/cases/create/  - uruchamia pipeline i zwraca OBIEKT CASE w kształcie frontu
 
-Brak jeszcze persystencji w DB — to dorobimy w kolejnym kroku
+Brak jeszcze persystencji w DB - to dorobimy w kolejnym kroku
 (migracje + zapis do modeli `Case`, `CasePhoto`, `CaseHistoryEvent`).
 """
 
@@ -31,7 +31,7 @@ from .serializers import (
     CaseSerializer,
 )
 
-# Ile wpisów KB wstrzykujemy do pipelinu — kompromis między jakością a kosztem tokenów.
+# Ile wpisów KB wstrzykujemy do pipelinu - kompromis między jakością a kosztem tokenów.
 KB_CONTEXT_LIMIT = 5
 
 # Wyświetlana nazwa "wykonawcy" akcji koordynatora. Do podmiany gdy wejdzie auth.
@@ -45,7 +45,7 @@ def _now_iso() -> str:
 
 
 def _next_case_id() -> str:
-    """`CASE-{rok}-{4 hex znaki}`. Tymczasowo — bez DB, krótki uuid jako sufiks.
+    """`CASE-{rok}-{4 hex znaki}`. Tymczasowo - bez DB, krótki uuid jako sufiks.
     Po dorobieniu persystencji zamienić na sekwencję z bazy."""
     year = datetime.now(timezone.utc).year
     suffix = uuid.uuid4().hex[:4].upper()
@@ -66,10 +66,10 @@ def _resolve_photo_to_data_url(url: str) -> str | None:
     """Zamienia URL z naszego MEDIA na `data:image/...;base64,...`.
 
     OpenAI Vision potrzebuje albo publicznie dostępnego URL-a, albo dataURL.
-    Nasze pliki w `MEDIA_ROOT` siedzą na localhost/wewnętrznej sieci dockera —
+    Nasze pliki w `MEDIA_ROOT` siedzą na localhost/wewnętrznej sieci dockera -
     OpenAI tam nie dotrze. Więc czytamy bytes z dysku i kodujemy base64.
     Zwracamy `None` gdy URL nie wskazuje na nasze media / plik nie istnieje
-    / typ MIME nie jest obrazem — wtedy zdjęcie po prostu pomijamy."""
+    / typ MIME nie jest obrazem - wtedy zdjęcie po prostu pomijamy."""
     if not url:
         return None
     if url.startswith("data:"):
@@ -77,7 +77,7 @@ def _resolve_photo_to_data_url(url: str) -> str | None:
 
     media_marker = settings.MEDIA_URL or "/media/"
     if media_marker not in url:
-        # URL spoza naszego serwera — nie pobieramy, pomijamy.
+        # URL spoza naszego serwera - nie pobieramy, pomijamy.
         return None
 
     relative = url.split(media_marker, 1)[1].lstrip("/")
@@ -106,7 +106,7 @@ def _resolve_photos(urls: list[str]) -> list[str]:
 
 def _build_kb_context(limit: int = KB_CONTEXT_LIMIT) -> str:
     """Składa krótki blok tekstu z ostatnich wpisów KB do wstrzyknięcia w prompt.
-    Pusty string gdy KB pusta — wtedy `_kb_block` w pipelinie zwróci ''."""
+    Pusty string gdy KB pusta - wtedy `_kb_block` w pipelinie zwróci ''."""
     entries = KnowledgeBaseEntry.objects.all()[:limit]
     if not entries:
         return ""
@@ -220,7 +220,7 @@ class ApproveCaseView(APIView):
 
     Zatwierdza sprawę: flip `approved=True`, zapis snapshotu do KB
     (pamięć trwała dla kolejnych weryfikacji), wpis do historii.
-    Body (opcjonalne): `{"comment": "..."}` — nota koordynatora trafia do KB.
+    Body (opcjonalne): `{"comment": "..."}` - nota koordynatora trafia do KB.
     """
 
     def post(self, request, case_id, *args, **kwargs):
@@ -266,7 +266,7 @@ class CorrectCaseView(APIView):
     """POST /api/cases/<case_id>/correct/
 
     Ręczna korekta klasyfikacji AI przez koordynatora. Wszystkie pola opcjonalne
-    — aktualizujemy tylko te, które przyszły w body.
+    - aktualizujemy tylko te, które przyszły w body.
     Body (wszystkie opcjonalne):
         {
           "category": "Uszkodzenie mechaniczne",
@@ -274,7 +274,7 @@ class CorrectCaseView(APIView):
           "responsibility": "tenant" | "owner" | "unresolved",
           "labor_cost": 120,
           "material_cost": 80,
-          "comment": "Wyraźne pęknięcie na środku — to nie zużycie."
+          "comment": "Wyraźne pęknięcie na środku - to nie zużycie."
         }
     Po zmianie `responsibility` przeliczamy też `mail_should_generate`/`template`.
     """
@@ -428,10 +428,10 @@ class CaseListView(APIView):
 
 
 class PhotoUploadView(APIView):
-    """POST /api/upload-photo/  — multipart upload zdjęcia.
+    """POST /api/upload-photo/  - multipart upload zdjęcia.
 
     Zapisuje plik bezpośrednio do MEDIA_ROOT/cases/ przez `default_storage`
-    (BEZ tworzenia wiersza w `CasePhoto` — bo `case` jest wymaganym FK i nie
+    (BEZ tworzenia wiersza w `CasePhoto` - bo `case` jest wymaganym FK i nie
     wiemy jeszcze do której sprawy zdjęcie należy). Zwraca absolutny URL,
     który frontend wkleja do listy `photos` przy `POST /api/cases/create/`.
     Wiersz `CasePhoto(url=...)` powstaje dopiero w `_save_case`.

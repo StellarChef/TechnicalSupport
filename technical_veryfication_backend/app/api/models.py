@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Case(models.Model):
-    """Pojedyncze zgłoszenie usterki — odpowiada obiektowi `case` z frontendu."""
+    """Pojedyncze zgłoszenie usterki - odpowiada obiektowi `case` z frontendu."""
 
     class Responsibility(models.TextChoices):
         OWNER = "owner", "Właściciel"
@@ -58,7 +58,7 @@ class Case(models.Model):
     cost_materials = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     cost_currency = models.CharField(max_length=8, default="PLN")
 
-    # Mail (mail) — generujemy tylko draft, wysyłka jest poza tym systemem
+    # Mail (mail) - generujemy tylko draft, wysyłka jest poza tym systemem
     mail_should_generate = models.BooleanField(default=False)
     mail_template = models.CharField(
         max_length=40, choices=MailTemplate.choices, blank=True
@@ -109,7 +109,7 @@ class CaseHistoryEvent(models.Model):
 
 class KnowledgeBaseEntry(models.Model):
     """Zatwierdzona sprawa zachowana jako referencja dla AI przy kolejnych
-    weryfikacjach — "pamięć trwała" odróżniana od operacyjnej listy spraw.
+    weryfikacjach - "pamięć trwała" odróżniana od operacyjnej listy spraw.
 
     Powstaje przy zatwierdzaniu case'a (`POST /api/cases/<id>/approve/`).
     Pipeline `PromptService` pobiera ostatnie wpisy i wstrzykuje je jako

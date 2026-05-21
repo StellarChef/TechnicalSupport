@@ -1,5 +1,5 @@
 """
-Tester pipelinu PromptService — uruchamia scenariusze i zapisuje wyniki
+Tester pipelinu PromptService - uruchamia scenariusze i zapisuje wyniki
 do tests/test_results.json.
 
 Domyślnie idzie w trybie SYMULACJI (bez wywołań API, szybko, deterministycznie).

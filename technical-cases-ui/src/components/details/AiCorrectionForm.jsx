@@ -43,7 +43,7 @@ export default function AiCorrectionForm({ selectedCase, onCaseUpdated }) {
     setBusy(true);
     setError(null);
     try {
-      // Wysyłamy tylko zmienione pola — backend ma update_fields.
+      // Wysyłamy tylko zmienione pola - backend ma update_fields.
       const payload = {
         category,
         damage_type: damageType,
